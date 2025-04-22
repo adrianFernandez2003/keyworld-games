@@ -19,10 +19,12 @@ interface Game {
   publisher_id: string;
   images: { url: string; alt?: string }[];
   platform_game: {
+    platform_id: string;
     platform: {
       name: string;
     };
   }[];
+  
 }
 
 export default function GamePage() {
@@ -74,7 +76,10 @@ export default function GamePage() {
   id={game.id}
   title={game.title}
   price={game.price}
-  platforms={(game.platform_game ?? []).map(pg => pg.platform?.name).filter(Boolean)}
+  platforms={(game.platform_game ?? []).map(pg => ({
+  id: pg.platform_id,
+  name: pg.platform?.name || "Desconocido"
+}))}
 />
 
               </div>

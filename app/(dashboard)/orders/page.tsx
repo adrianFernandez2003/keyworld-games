@@ -8,12 +8,17 @@ import { useUser } from "@/context/user-context";
 
 interface Order {
   code: string;
-  platform: string;
   is_redeemed: boolean;
-  platform_game_id: string;
-  game: {
-    title: string;
-    price: number;
+  redeemed_at?: string | null;
+  created_at: string;
+  platform_game: {
+    games: {
+      title: string;
+      price: number;
+    };
+    platforms: {
+      name: string;
+    };
   };
 }
 
@@ -27,14 +32,13 @@ const OrdersPage = () => {
 
     const fetchOrders = async () => {
       try {
-        const res = await fetch("/api/orders"); // deberías tener este endpoint en `/app/api/orders/route.ts`
+        const res = await fetch("/api/orders");
         const data = await res.json();
-
         if (Array.isArray(data)) {
           setOrders(data);
         } else {
-          console.warn("Formato inesperado:", data);
           setOrders([]);
+          console.warn("Formato inesperado:", data);
         }
       } catch (err) {
         console.error("Error al obtener pedidos:", err);
@@ -47,16 +51,7 @@ const OrdersPage = () => {
   }, [user]);
 
   const redeemCode = async (code: string) => {
-    await fetch(`/api/redeem/${code}`, {
-      method: "PATCH",
-    });
-    window.location.reload();
-  };
-
-  const refundCode = async (code: string) => {
-    await fetch(`/api/refund/${code}`, {
-      method: "DELETE",
-    });
+    await fetch(`/api/redeem/${code}`, { method: "PATCH" });
     window.location.reload();
   };
 
@@ -71,38 +66,63 @@ const OrdersPage = () => {
           {loading ? (
             <p>Cargando pedidos...</p>
           ) : orders.length === 0 ? (
-            <p>Aún no tienes pedidos.</p>
+            <p>No tienes pedidos aún.</p>
           ) : (
-            <div className="grid grid-cols-1 gap-6">
-              {orders.map((order, idx) => (
-                <div key={idx} className="bg-white p-6 rounded-lg shadow-md border">
-                  <p className="text-lg font-semibold">Código: {order.code}</p>
-                  <p>Plataforma: {order.platform}</p>
-                  <p>Juego: {order.game?.title || "N/D"}</p>
-                  <p>Precio: ${order.game?.price?.toFixed(2) || "0.00"}</p>
-                  <p>
-                    Estado:{" "}
-                    {order.is_redeemed ? "✅ Canjeado" : "❌ No canjeado"}
-                  </p>
+            <div className="overflow-x-auto bg-white shadow rounded-lg">
+              <table className="min-w-full text-sm text-left">
+                <thead className="bg-[#f4f4f7] text-xs uppercase text-gray-700">
+                  <tr>
+                    <th className="px-6 py-3">FECHA</th>
+                    <th className="px-6 py-3">ESTADO</th>
+                    <th className="px-6 py-3">TÍTULO</th>
+                    <th className="px-6 py-3">CÓDIGO</th>
+                    <th className="px-6 py-3">MÉTODO DE PAGO</th>
+                    <th className="px-6 py-3">TOTAL</th>
+                    <th className="px-6 py-3 text-right">ACCIONES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((order, idx) => {
+                    const game = order.platform_game?.games;
+                    const platform = order.platform_game?.platforms;
+                    const price = game?.price?.toFixed(2) || "0.00";
 
-                  {!order.is_redeemed && (
-                    <div className="mt-4 flex gap-4">
-                      <button
-                        onClick={() => redeemCode(order.code)}
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-                      >
-                        Canjear
-                      </button>
-                      <button
-                        onClick={() => refundCode(order.code)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-                      >
-                        Reembolsar
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
+                    const statusText = order.is_redeemed ? "ENTREGADO" : "PENDIENTE";
+                    const statusColor = order.is_redeemed ? "text-emerald-600" : "text-yellow-600";
+                    
+
+                    return (
+                      <tr key={idx} className="border-b last:border-0">
+                        <td className="px-6 py-4">
+                          {new Date(order.created_at).toLocaleString()}
+                        </td>
+                        <td className={`px-6 py-4 font-semibold ${statusColor}`}>
+                          {statusText}
+                        </td>
+                        <td className="px-6 py-4">
+                          {game?.title || "N/D"} ({platform?.name || "N/D"})
+                        </td>
+                        <td className="px-6 py-4 font-mono">
+                          {order.is_redeemed ? order.code : "••••••••"}
+                        </td>
+                        <td className="px-6 py-4">PayPal</td>
+                        <td className="px-6 py-4">MX${price}</td>
+                        <td className="px-6 py-4 text-right space-x-2">
+  {!order.is_redeemed && order.redeemed_at == null && (
+    <button
+      onClick={() => redeemCode(order.code)}
+      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
+    >
+      Canjear
+    </button>
+  )}
+</td>
+
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </main>
