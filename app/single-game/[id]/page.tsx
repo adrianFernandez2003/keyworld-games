@@ -24,7 +24,6 @@ interface Game {
       name: string;
     };
   }[];
-  
 }
 
 export default function GamePage() {
@@ -60,11 +59,11 @@ export default function GamePage() {
   return (
     <div>
       <BarNavigation />
+      <div className="flex flex-col items-center min-h-screen px-8 pb-20 font-[family-name:var(--font-geist-sans)] bg-[#A46C83]">
+        <main className="flex flex-col gap-8 items-center sm:items-start bg-[#D9D9D9] w-full h-full p-8 rounded-b-lg shadow-lg">
 
-      <div className="bg-[#A46C83] min-h-screen px-6 sm:px-16 py-4">
-        <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 bg-white p-4 rounded-lg shadow-md">
           {game && (
-            <>
+            <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 bg-white p-4 rounded-lg shadow-md w-full">
               <GameImages images={game.images ?? []} />
               <div>
                 <GameDescription
@@ -72,32 +71,31 @@ export default function GamePage() {
                   price={game.price}
                   description={game.description}
                 />
-<GameActions
-  id={game.id}
-  title={game.title}
-  price={game.price}
-  platforms={(game.platform_game ?? []).map(pg => ({
-  id: pg.platform_id,
-  name: pg.platform?.name || "Desconocido"
-}))}
-/>
-
+                <GameActions
+                  id={game.id}
+                  title={game.title}
+                  price={game.price}
+                  platforms={(game.platform_game ?? []).map(pg => ({
+                    id: pg.platform_id,
+                    name: pg.platform?.name || "Desconocido"
+                  }))}
+                />
               </div>
-            </>
+            </div>
           )}
-        </div>
 
-        <section className="mt-10">
-          {!isReady ? (
-            <GameCarouselSkeleton title="Recomendados" />
-          ) : (
-            <GameCarousel title="Recomendados" games={recommended} />
-          )}
-        </section>
+          <section className="w-full">
+            {!isReady ? (
+              <GameCarouselSkeleton title="Recomendados" />
+            ) : (
+              <GameCarousel title="Recomendados" games={recommended} />
+            )}
+          </section>
 
-        <section className="mt-10">
-          <GameReviewList gameId={gameId} />
-        </section>
+          <section className="w-full">
+            <GameReviewList gameId={gameId} />
+          </section>
+        </main>
       </div>
     </div>
   );
