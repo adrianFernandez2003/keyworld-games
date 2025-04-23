@@ -99,11 +99,10 @@ export default function CheckoutPage() {
                 <span>MX${totalPrice.toFixed(2)}</span>
               </div>
 
-              {/* Botón de pago */}
               {items.length > 0 && (
                 <div className="mt-6 space-y-4">
                   {!user && (
-                    <input
+                    <input  
                       type="email"
                       placeholder="Introduce tu correo"
                       className="w-full border rounded p-2"
@@ -112,12 +111,13 @@ export default function CheckoutPage() {
                     />
                   )}
 
-                  <PayPalButton
-                    amount={totalPrice}
-                    platformGameId={items[0].id} 
-                    email={email}
-                    isAuthenticated={!!user}
-                  />
+<PayPalButton
+  amount={totalPrice}
+  items={items} // 👈 enviar todos los ítems
+  email={email}
+  isAuthenticated={!!user}
+/>
+
                 </div>
               )}
             </div>
