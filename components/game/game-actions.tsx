@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FaShoppingCart } from "react-icons/fa";
 import { PlatformIcons } from "@/components/game/platform-icons";
 import { useCart } from "@/context/cart-context";
@@ -22,6 +23,7 @@ export const GameActions = ({ id, title, price, platforms, image }: GameActionsP
   const { addItem } = useCart();
   const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleAdd = async () => {
     if (!selectedPlatform) {
@@ -39,7 +41,7 @@ export const GameActions = ({ id, title, price, platforms, image }: GameActionsP
       }
 
       addItem({
-        id: data.platform_game_id, // 👈 importante: este es el platform_game_id
+        id: data.platform_game_id,
         title,
         price,
         image,
@@ -48,6 +50,37 @@ export const GameActions = ({ id, title, price, platforms, image }: GameActionsP
       alert("Juego añadido al carrito");
     } catch (err) {
       console.error("❌ Error añadiendo al carrito:", err);
+      alert("Ocurrió un error. Intenta de nuevo.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!selectedPlatform) {
+      alert("Selecciona una plataforma antes de continuar");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/platform-game?game_id=${id}&platform_id=${selectedPlatform}`);
+      const data = await res.json();
+
+      if (!res.ok || !data.platform_game_id) {
+        throw new Error(data.error || "No se pudo obtener el ID de plataforma");
+      }
+
+      addItem({
+        id: data.platform_game_id,
+        title,
+        price,
+        image,
+      });
+
+      router.push("/checkout/payment");
+    } catch (err) {
+      console.error("❌ Error procesando compra directa:", err);
       alert("Ocurrió un error. Intenta de nuevo.");
     } finally {
       setLoading(false);
@@ -81,7 +114,8 @@ export const GameActions = ({ id, title, price, platforms, image }: GameActionsP
           <FaShoppingCart className="w-5 h-5" />
         </button>
         <button
-          disabled={!selectedPlatform}
+          onClick={handleBuyNow}
+          disabled={!selectedPlatform || loading}
           className="bg-[#212121] text-white px-4 py-2 rounded-md shadow font-semibold disabled:opacity-50"
         >
           Comprar ahora

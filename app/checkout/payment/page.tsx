@@ -18,27 +18,28 @@ export default function CheckoutPage() {
 
       <div className="min-h-screen bg-[#A46C83] px-4 sm:px-16 py-10 font-[family-name:var(--font-geist-sans)] text-[#212121]">
         <div className="grid md:grid-cols-3 gap-6">
-          {/* Métodos de pago */}
+     
           <div className="md:col-span-2 bg-white rounded-lg p-6 shadow-lg">
             <h2 className="text-xl font-bold mb-6">Método de pago</h2>
             <div className="space-y-4">
-              <label className="flex items-center justify-between border px-4 py-3 rounded cursor-pointer hover:bg-gray-50">
-                <span>Tarjeta de crédito o débito</span>
-                <input type="radio" name="payment" />
-              </label>
-              <label className="flex items-center justify-between border px-4 py-3 rounded cursor-pointer hover:bg-gray-50">
-                <span>PayPal</span>
-                <input type="radio" name="payment" />
-              </label>
-              <label className="flex items-center justify-between border px-4 py-3 rounded cursor-pointer hover:bg-gray-50">
-                <span>OXXO Pay</span>
-                <input type="radio" name="payment" />
-              </label>
-              <label className="flex items-center justify-between border px-4 py-3 rounded cursor-pointer hover:bg-gray-50">
-                <span>BBVA Bancomer</span>
-                <input type="radio" name="payment" />
-              </label>
-            </div>
+  <label className="flex items-center justify-between border px-4 py-3 rounded cursor-pointer hover:bg-gray-50">
+    <span>Tarjeta de crédito o débito</span>
+    <input type="radio" name="payment" />
+  </label>
+  <label className="flex items-center justify-between border px-4 py-3 rounded cursor-pointer hover:bg-gray-50">
+    <span>PayPal</span>
+    <input type="radio" name="payment" defaultChecked />
+  </label>
+  <label className="flex items-center justify-between border px-4 py-3 rounded cursor-pointer hover:bg-gray-50">
+    <span>OXXO Pay</span>
+    <input type="radio" name="payment" />
+  </label>
+  <label className="flex items-center justify-between border px-4 py-3 rounded cursor-pointer hover:bg-gray-50">
+    <span>BBVA Bancomer</span>
+    <input type="radio" name="payment" />
+  </label>
+</div>
+
           </div>
 
           {/* Resumen del pedido */}
