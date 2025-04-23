@@ -33,10 +33,13 @@ export const PayPalButton = ({
   useEffect(() => {
     const renderPayPal = () => {
       const container = document.getElementById("paypal-button-container");
-      if (!container || !(window as any).paypal?.Buttons) return;
-      container.innerHTML = "";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (!container || !(window as any).paypal?.Buttons) return; 
 
-      (window as any).paypal.Buttons({
+      container.innerHTML = "";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).paypal.Buttons({ 
+
         createOrder: (_: unknown, actions: CreateOrderActions) => {
           return actions.order.create({
             intent: "CAPTURE",

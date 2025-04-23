@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import Image from "next/image";
+
 
 interface Props {
   user: {
@@ -15,7 +17,7 @@ const AccountInfo: React.FC<Props> = ({ user }) => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-lg max-w-sm mx-auto">
       <div className="flex justify-center mb-4">
-        <img
+        <Image
           src={user.avatar_url || "https://placekitten.com/300/300"}
           alt="Profile Avatar"
           className="w-24 h-24 rounded-full object-cover"

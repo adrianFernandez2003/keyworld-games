@@ -5,6 +5,8 @@ import UserSideBar from "@/components/user-side-bar";
 import { userLinks } from "@/lib/constants";
 import { UserCardSkeleton } from "@/components/ui/skeletons/user-card-skeleton";
 import { useUser } from "@/context/user-context";
+import Image from "next/image";
+
 
 const ProfilePage = () => {
   const { user, loading } = useUser();
@@ -20,10 +22,12 @@ const ProfilePage = () => {
           ) : (
             <div className="p-6 bg-white rounded-lg shadow-lg max-w-sm mx-auto">
               <div className="flex justify-center mb-4">
-                <img
+                <Image
                   src={user.avatar_url || "https://placecats.com/300/300"}
                   alt="Foto de perfil"
                   className="w-24 h-24 rounded-full object-cover"
+                  width={24}
+                  height={24}
                 />
               </div>
               <div className="text-center">

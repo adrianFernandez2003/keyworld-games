@@ -5,7 +5,7 @@ interface GameReviewListProps {
   gameId: string;
 }
 
-export const GameReviewList = ({ gameId }: GameReviewListProps) => {
+export const GameReviewList = ({ }: GameReviewListProps) => {
   const reviews = [
     {
       id: 1,

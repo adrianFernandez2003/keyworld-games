@@ -8,6 +8,8 @@ import { SearchBar } from "../search-bar";
 import { useUser } from "@/context/user-context";
 import { FaShoppingCart, FaTrash } from "react-icons/fa";
 import { useCart } from "@/context/cart-context";
+import Image from "next/image";
+
 
 export function BarNavigation() {
   const router = useRouter();
@@ -65,8 +67,8 @@ export function BarNavigation() {
               <div className="flex flex-col gap-4">
                 {items.map((item) => (
                   <div key={`${item.id}-${item.title}`} className="flex gap-3 items-center border-b pb-2">
-                    <img
-                      src={item.image || "/img/default-game.jpg"}
+                    <Image
+                      src={item.image || "/Image/default-game.jpg"}
                       alt={item.title}
                       className="w-12 h-12 rounded-md object-cover"
                     />

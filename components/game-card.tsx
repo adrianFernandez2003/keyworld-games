@@ -1,6 +1,8 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
+
 
 interface GameCardProps {
   id: string;
@@ -17,10 +19,12 @@ export function GameCard({ id, title, price, image, platforms }: GameCardProps) 
       className="w-24 h-64 md:w-48 md:h-80 bg-gradient-to-b from-[#212121] to-[#181818] rounded-md p-3 flex flex-col items-center"
     >
       <div className="w-full h-3/4">
-        <img
+        <Image
           className="object-cover w-full h-full rounded-md"
-          src={image || "/img/default-game.jpg"}
+          src={image || "/Image/default-game.jpg"}
           alt={title}
+          width={192}
+          height={256}
         />
       </div>
       <div className="text-start pt-2 w-full">

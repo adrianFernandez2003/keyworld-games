@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaShoppingCart } from "react-icons/fa";
-import { PlatformIcons } from "@/components/game/platform-icons";
 import { useCart } from "@/context/cart-context";
 
 interface Platform {

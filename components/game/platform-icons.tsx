@@ -3,7 +3,6 @@
 import { JSX } from "react";
 import { BsNintendoSwitch } from "react-icons/bs";
 import { FaPlaystation, FaXbox, FaSteam } from "react-icons/fa";
-import { GiPc } from "react-icons/gi";
 
 interface PlatformIconsProps {
   platforms: string[];

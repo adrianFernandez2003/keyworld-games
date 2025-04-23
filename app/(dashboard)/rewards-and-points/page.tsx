@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { BarNavigation } from "@/components/ui/bar-navigation";
 import Board from "@/components/ui/tetris/board";
 import { useTetris } from "@/components/hooks/useTetris";

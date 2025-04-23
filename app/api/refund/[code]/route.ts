@@ -1,9 +1,18 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest } from "next/server";
 
-export async function DELETE(req: NextRequest, context: { params: { code: string } }) {
+export async function DELETE(req: NextRequest) {
   const supabase = await createClient();
-  const { code } = context.params;
+
+  // Obtener el código desde la URL
+  const url = new URL(req.url);
+  const code = url.pathname.split("/").pop();
+
+  if (!code) {
+    return new Response(JSON.stringify({ message: "Código no especificado" }), {
+      status: 400,
+    });
+  }
 
   console.log("🧾 Código recibido para reembolso:", code);
 

@@ -98,7 +98,7 @@ type Action = {
 };
 
 function boardReducer(state: BoardState, action: Action): BoardState {
-  let newState = { ...state };
+  const newState = { ...state };
 
   switch (action.type) {
     case 'start':

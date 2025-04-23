@@ -11,11 +11,12 @@ interface Game {
   price: number;
   image?: string;
   platform_game: {
-    platforms: {
+    platform: {
       name: string;
     };
   }[];
 }
+
 
 const SearchResultsPage = () => {
   const searchParams = useSearchParams();

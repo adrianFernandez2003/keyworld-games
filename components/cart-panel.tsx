@@ -2,6 +2,8 @@
 
 import { FaTrash, FaShoppingCart } from "react-icons/fa";
 import { useCart } from "@/context/cart-context";
+import Image from "next/image";
+
 
 export const CartPanel = () => {
   const { items, increaseItem, decreaseItem, removeItem, totalPrice } = useCart();
@@ -19,7 +21,7 @@ export const CartPanel = () => {
         <div className="flex flex-col gap-4">
           {items.map((item) => (
             <div key={item.id} className="flex gap-3 items-center border-b pb-2">
-              <img src={item.image || "/img/default-game.jpg"} alt={item.title} className="w-12 h-12 rounded-md object-cover" />
+              <Image src={item.image || "/Image/default-game.jpg"} alt={item.title} className="w-12 h-12 rounded-md object-cover" />
               <div className="flex flex-col flex-1">
                 <p className="text-sm font-semibold">{item.title}</p>
                 <p className="text-xs text-gray-600">MX${item.price}</p>

@@ -12,8 +12,9 @@ export async function GET(req: Request) {
       title,
       price,
       platform_game (
-        platforms (name)
+        platform:platforms (name)
       )
+
     `)
     .order("created_at", { ascending: false });
 

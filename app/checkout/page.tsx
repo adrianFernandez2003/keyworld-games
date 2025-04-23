@@ -4,6 +4,8 @@ import { BarNavigation } from "@/components/ui/bar-navigation";
 import { useCart } from "@/context/cart-context";
 import { FaTrash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+
 
 export default function CartPage() {
   const { items, increaseItem, decreaseItem, removeItem, totalPrice } = useCart();
@@ -26,8 +28,8 @@ export default function CartPage() {
                 {items.map((item) => (
                   <div key={`${item.id}-${item.title}`} className="flex items-center justify-between border-b pb-4">
                     <div className="flex gap-4 items-center">
-                      <img
-                        src={item.image || "/img/default-game.jpg"}
+                      <Image
+                        src={item.image || "/Image/default-game.jpg"}
                         alt={item.title}
                         className="w-16 h-16 rounded-md object-cover"
                       />

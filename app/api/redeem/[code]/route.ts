@@ -1,14 +1,18 @@
-// app/api/redeem/[code]/route.ts
-
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest } from "next/server";
 
-export async function PATCH(
-  req: NextRequest,
-  context: { params: { code: string } }
-) {
+export async function PATCH(req: NextRequest) {
   const supabase = await createClient();
-  const code = context.params.code;
+
+  // Obtener el código desde la URL (último segmento)
+  const url = new URL(req.url);
+  const code = url.pathname.split("/").pop();
+
+  if (!code) {
+    return new Response(JSON.stringify({ message: "Código no especificado" }), {
+      status: 400,
+    });
+  }
 
   console.log("🔁 Intentando actualizar código:", code);
 
@@ -25,5 +29,7 @@ export async function PATCH(
     return new Response(JSON.stringify({ message: "Error" }), { status: 500 });
   }
 
-  return new Response(JSON.stringify({ message: "Código canjeado" }), { status: 200 });
+  return new Response(JSON.stringify({ message: "Código canjeado" }), {
+    status: 200,
+  });
 }

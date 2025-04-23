@@ -5,6 +5,8 @@ import { signOutAction } from "@/app/actions";
 import { useUser } from "@/context/user-context";
 import { useRouter } from "next/navigation";
 import { ProfilePictureSkeleton } from "@/components/ui/skeletons/profile-picture-skeleton";
+import Image from "next/image";
+
 
 export function ProfilePicture() {
   const { user, loading, updating } = useUser(); 
@@ -31,10 +33,12 @@ export function ProfilePicture() {
             className="rounded-full bg-gray-300 w-12 h-12 flex justify-center items-center cursor-pointer"
             onClick={handleToggle}
           >
-            <img
+            <Image
               src={user.avatar_url || "https://placecats.com/300/300"}
               alt="Perfil"
               className="w-12 h-12 rounded-full object-cover"
+              width={12}
+              height={12}
             />
           </div>
           <p className="text-sm text-white font-medium mt-1">{user.username}</p>
