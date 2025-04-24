@@ -7,14 +7,13 @@ interface Game {
   id: string;
   title: string;
   price: number;
-  image?: string;
+  images?: { url: string; alt?: string; main: boolean }[];
   platform_game: {
     platform: {
       name: string;
     };
   }[];
 }
-
 
 interface GameCarouselProps {
   title?: string;
@@ -77,18 +76,25 @@ const GameCarousel: React.FC<GameCarouselProps> = ({ title = "Games", games }) =
         >
           {games
             .slice(startIndex, startIndex + itemsPerPage)
-            .map((game) => (
-<GameCard
-  key={game.id}
-  id={game.id}
-  title={game.title}
-  price={game.price}
-  platforms={game.platform_game.map((pg) => pg.platform?.name).filter(Boolean)}
+            .map((game) => {
+              const mainImage =
+                game.images?.find((img) => img.main) || {
+                  url: "/img/rdr2.avif", // ✅ Fallback por defecto
+                  alt: "Sin imagen",
+                  main: true,
+                };
 
-  image={"/img/rdr2.avif"}
-/>
-
-            ))}
+              return (
+                <GameCard
+                  key={game.id}
+                  id={game.id}
+                  title={game.title}
+                  price={game.price}
+                  platforms={game.platform_game.map((pg) => pg.platform?.name).filter(Boolean)}
+                  images={[mainImage]}
+                />
+              );
+            })}
         </div>
 
         {startIndex + itemsPerPage < games.length && (

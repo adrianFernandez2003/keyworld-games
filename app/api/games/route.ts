@@ -11,10 +11,10 @@ export async function GET(req: Request) {
       id,
       title,
       price,
+      images,
       platform_game (
         platform:platforms (name)
       )
-
     `)
     .order("created_at", { ascending: false });
 
@@ -26,8 +26,20 @@ export async function GET(req: Request) {
 
   if (error) {
     console.error("Error fetching public games:", error);
-    return new Response(JSON.stringify([]), { status: 200 });
+    return new Response(JSON.stringify([]), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
-  return new Response(JSON.stringify(data), { status: 200 });
+  // (opcional) Asegurar que las imágenes están estructuradas correctamente
+  const result = data.map((game) => ({
+    ...game,
+    images: (game.images ?? []).filter((img: any) => img.url && img.main !== undefined),
+  }));
+
+  return new Response(JSON.stringify(result), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }

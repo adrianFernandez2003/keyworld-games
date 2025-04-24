@@ -17,7 +17,7 @@ interface Game {
   price: number;
   genre_id: string;
   publisher_id: string;
-  images: { url: string; alt?: string }[];
+  images: { url: string; alt?: string; main: boolean }[];
   platform_game: {
     platform_id: string;
     platform: {
@@ -64,7 +64,13 @@ export default function GamePage() {
 
           {game && (
             <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 bg-white p-4 rounded-lg shadow-md w-full">
-              <GameImages images={game.images ?? []} />
+              <GameImages
+  images={(game.images ?? []).map((img, i) => ({
+    ...img,
+    main: i === 0, // la primera imagen será la portada
+  }))}
+/>
+
               <div>
                 <GameDescription
                   title={game.title}

@@ -1,99 +1,64 @@
+import { NextRequest } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
-export async function POST(req: Request) {
+export async function GET(req: NextRequest) {
   const supabase = await createClient();
 
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  if (authError || !user) {
-    return new Response(JSON.stringify({ message: "Authentication failed" }), { status: 401 });
+  // Obtener usuario autenticado
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return new Response(
+      JSON.stringify({ message: "Usuario no autenticado" }),
+      { status: 401, headers: { "Content-Type": "application/json" } }
+    );
   }
 
-  const body = await req.json();
-  const { title, description, price, platforms } = body;
-
-  if (!platforms || !Array.isArray(platforms) || platforms.length === 0) {
-    return new Response(JSON.stringify({ message: "No platforms selected" }), { status: 400 });
-  }
-
-  const { data: publisher, error: pubError } = await supabase
+  // Obtener el publisher.id vinculado al usuario
+  const { data: publisher, error: publisherError } = await supabase
     .from("publishers")
     .select("id")
     .eq("user_id", user.id)
     .single();
 
-  if (pubError || !publisher) {
-    return new Response(JSON.stringify({ message: "Publisher not found" }), { status: 404 });
+  if (publisherError || !publisher) {
+    return new Response(
+      JSON.stringify({ message: "No se encontró el publisher" }),
+      { status: 403, headers: { "Content-Type": "application/json" } }
+    );
   }
 
-  const { data: game, error: gameError } = await supabase
+  // Obtener juegos del publisher con plataformas, imágenes y género
+  const { data: games, error } = await supabase
     .from("games")
-    .insert({
+    .select(`
+      id,
       title,
-      description,
       price,
-      publisher_id: publisher.id,
-    })
-    .select("id")
-    .single();
+      created_at,
+      images,
+      genre:genre_id (
+        name
+      ),
+      platform_game (
+        platform:platforms ( name )
+      )
+    `)
+    .eq("publisher_id", publisher.id)
+    .order("created_at", { ascending: false });
 
-  if (gameError || !game) {
-    console.error("Game creation error:", gameError);
-    return new Response(JSON.stringify({ message: gameError.message }), { status: 500 });
+  if (error) {
+    console.error("❌ Error al obtener juegos:", error.message);
+    return new Response(
+      JSON.stringify({ message: "Error al cargar juegos" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 
-  const platformRelations = platforms.map((platform_id: string) => ({
-    platform_id,
-    game_id: game.id,
-  }));
-
-  const { error: linkError } = await supabase
-    .from("platform_game")
-    .insert(platformRelations);
-
-  if (linkError) {
-    console.error("Error inserting platform relations:", linkError);
-    return new Response(JSON.stringify({ message: linkError.message }), { status: 500 });
-  }
-
-  return new Response(JSON.stringify({ message: "Game created" }), { status: 201 });
+  return new Response(JSON.stringify(games), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }
-
-
-export async function GET() {
-    const supabase = await createClient();
-  
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return new Response(JSON.stringify({ message: "Authentication failed" }), { status: 401 });
-    }
-  
-    const { data: publisher, error: pubError } = await supabase
-      .from("publishers")
-      .select("id")
-      .eq("user_id", user.id)
-      .single();
-  
-    if (pubError || !publisher) {
-      return new Response(JSON.stringify([]), { status: 200 });
-    }
-  
-    const { data: games, error } = await supabase
-      .from("games")
-      .select(`
-        id,
-        title,
-        price,
-        created_at,
-        platform_game (
-          platform:platforms (name)
-        )
-      `)
-      .eq("publisher_id", publisher.id);
-  
-    if (error) {
-      console.error("Error fetching games:", error);
-      return new Response(JSON.stringify({ message: "Error fetching games" }), { status: 500 });
-    }
-  
-    return new Response(JSON.stringify(games), { status: 200 });
-  }
