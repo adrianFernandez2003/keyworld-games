@@ -1,5 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
 
+interface GameImage {
+  url: string;
+  alt?: string;
+  main: boolean;
+}
+
 export async function GET(req: Request) {
   const supabase = await createClient();
   const { searchParams } = new URL(req.url);
@@ -32,10 +38,9 @@ export async function GET(req: Request) {
     });
   }
 
-  // (opcional) Asegurar que las imágenes están estructuradas correctamente
   const result = data.map((game) => ({
     ...game,
-    images: (game.images ?? []).filter((img: any) => img.url && img.main !== undefined),
+    images: (game.images ?? []).filter((img: GameImage) => img.url && img.main !== undefined),
   }));
 
   return new Response(JSON.stringify(result), {
