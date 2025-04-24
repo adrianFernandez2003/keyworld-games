@@ -56,7 +56,7 @@ const NewGamePage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
       const formData = new FormData();
       formData.append("title", form.title);
@@ -66,18 +66,24 @@ const NewGamePage = () => {
       if (mainImage) formData.append("main_image", mainImage);
       galleryImages.forEach((file) => formData.append("gallery_images", file));
       selectedPlatforms.forEach((p) => formData.append("platforms", p));
-
+  
       const res = await fetch("/api/publisher/games", {
         method: "POST",
         body: formData,
       });
-
+  
       if (!res.ok) {
-        const errorData = await res.json();
-        console.error("Error al crear el juego:", errorData.message);
+        const contentType = res.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+          const errorData = await res.json();
+          console.error("Error al crear el juego:", errorData.message);
+        } else {
+          const errorText = await res.text();
+          console.error("Error inesperado:", errorText);
+        }
         return;
       }
-
+  
       router.push("/publisher-mode");
     } catch (err) {
       console.error("Error inesperado:", err);
@@ -85,6 +91,7 @@ const NewGamePage = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="flex flex-col min-h-screen">

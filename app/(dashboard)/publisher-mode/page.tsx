@@ -48,7 +48,7 @@ const EditorDashboardPage = () => {
         const editorData = await editorRes.json();
         setEditor(editorData);
 
-        const gamesRes = await fetch("/api/publisher/games");
+        const gamesRes = await fetch("/api/publisher/games/get-games");
         const contentType = gamesRes.headers.get("content-type") || "";
         if (!gamesRes.ok || !contentType.includes("application/json")) {
           throw new Error("Respuesta inválida al obtener juegos");
