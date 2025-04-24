@@ -53,17 +53,18 @@ export default function RewardsAndPointsPage() {
 
     fetchGames();
   }, []);
-
+  
   useEffect(() => {
     if (!isPlaying && score > 0 && !hasSentScore.current) {
       hasSentScore.current = true;
       sendScore(score);
     }
-
+  
     if (isPlaying) {
       hasSentScore.current = false;
     }
-  }, [isPlaying]);
+  }, [isPlaying, score]);
+  
 
   async function sendScore(score: number) {
     try {
@@ -94,7 +95,6 @@ export default function RewardsAndPointsPage() {
         <main className="flex flex-col gap-8 items-center sm:items-start bg-[#D9D9D9] w-full h-full p-8 rounded-b-lg shadow-lg max-w-7xl">
           <h1 className="text-3xl font-bold mb-6">Tienda de puntos & Recompensas</h1>
 
-          {/* JUEGO DE TETRIS */}
           <div className="flex flex-col lg:flex-row gap-10 w-full justify-between">
             <div className="w-full lg:w-1/2 flex justify-center">
               <Board currentBoard={board} />
@@ -155,7 +155,6 @@ export default function RewardsAndPointsPage() {
             </ul>
           </div>
 
-          {/* ✅ CARRUSEL GENERAL DEBAJO DE LAS INSTRUCCIONES */}
           {isReady ? (
             <GameCarousel title="Juegos recomendados" games={games} />
           ) : (
