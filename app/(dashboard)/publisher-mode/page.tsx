@@ -7,6 +7,7 @@ import { publisherLinks } from "@/lib/constants";
 import { GameCard } from "@/components/game-card";
 import { GameCardSkeleton } from "@/components/ui/skeletons/game-card-skeleton";
 import { PublisherHeaderSkeleton } from "@/components/ui/skeletons/publisher-header-skeleton";
+import { PostCard } from "@/components/post-card";
 
 interface Editor {
   id: string;
@@ -28,10 +29,19 @@ interface Game {
   }[];
 }
 
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+  cover_url: string;
+  created_at: string;
+}
+
 const EditorDashboardPage = () => {
   const router = useRouter();
   const [editor, setEditor] = useState<Editor | null>(null);
   const [games, setGames] = useState<Game[] | null>(null);
+  const [news, setNews] = useState<Post[] | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,13 +59,12 @@ const EditorDashboardPage = () => {
         setEditor(editorData);
 
         const gamesRes = await fetch("/api/publisher/games/get-games");
-        const contentType = gamesRes.headers.get("content-type") || "";
-        if (!gamesRes.ok || !contentType.includes("application/json")) {
-          throw new Error("Respuesta inválida al obtener juegos");
-        }
-
         const gamesData = await gamesRes.json();
         setGames(gamesData);
+
+        const newsRes = await fetch("/api/publisher/news/get-news");
+        const newsData = await newsRes.json();
+        setNews(newsData);
       } catch (error) {
         console.error("Error al cargar el panel del editor:", error);
       }
@@ -64,7 +73,7 @@ const EditorDashboardPage = () => {
     fetchData();
   }, [router]);
 
-  const isLoading = !editor || games === null;
+  const isLoading = !editor || games === null || news === null;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -73,9 +82,7 @@ const EditorDashboardPage = () => {
         <UserSideBar links={publisherLinks} />
         <main className="flex-1 bg-gray-100 p-10">
           {isLoading ? (
-            <>
-              <PublisherHeaderSkeleton />
-            </>
+            <PublisherHeaderSkeleton />
           ) : (
             <div className="mb-10">
               <h1 className="text-3xl font-bold mb-2">¡Bienvenido, {editor!.name}!</h1>
@@ -122,6 +129,26 @@ const EditorDashboardPage = () => {
                   />
                 );
               })}
+            </div>
+          )}
+
+          <div className="flex justify-between items-center mt-12 mb-4">
+            <h2 className="text-xl font-semibold">Noticias publicadas</h2>
+            <button
+              onClick={() => router.push("/publisher-mode/new-post")}
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              + Crear nueva noticia
+            </button>
+          </div>
+
+          {news && news.length === 0 ? (
+            <p>No has publicado ninguna noticia.</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {news?.map((post) => (
+                <PostCard key={post.id} {...post} />
+              ))}
             </div>
           )}
         </main>

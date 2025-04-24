@@ -1,76 +1,52 @@
 "use client";
-import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { BarNavigation } from "@/components/ui/bar-navigation";
 import UserSideBar from "@/components/user-side-bar";
 import { publisherLinks } from "@/lib/constants";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const NewGamePage = () => {
+export default function NewPostPage() {
   const router = useRouter();
-
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    price: "",
-  });
-
-  const [platforms, setPlatforms] = useState<{ id: string; name: string }[]>([]);
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [cover, setCover] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchPlatforms = async () => {
-      try {
-        const res = await fetch("/api/platforms");
-        const data = await res.json();
-        setPlatforms(data);
-      } catch (err) {
-        console.error("Error al obtener plataformas:", err);
-      }
-    };
-
-    fetchPlatforms();
-  }, []);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handlePlatformToggle = (platformId: string) => {
-    setSelectedPlatforms((prev) =>
-      prev.includes(platformId)
-        ? prev.filter((id) => id !== platformId)
-        : [...prev, platformId]
-    );
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!title || !content || !cover) {
+      toast.error("Todos los campos son obligatorios");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("cover", cover);
+
     setLoading(true);
 
     try {
-      const res = await fetch("/api/publisher/games", {
+      const res = await fetch("/api/publisher/news", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: form.title,
-          description: form.description,
-          price: parseFloat(form.price),
-          platforms: selectedPlatforms,
-        }),
+        body: formData,
       });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.error("Error al crear el juego:", errorData.message);
-        return;
-      }
+      const data = await res.json();
 
-      router.push("/publisher-mode");
+      if (res.ok) {
+        toast.success("Noticia publicada con éxito");
+        router.push("/publisher-mode");
+      } else {
+        toast.error(data.message || "Error al publicar la noticia");
+      }
     } catch (err) {
-      console.error("Error inesperado:", err);
+      toast.error("Error inesperado");
+      console.error("❌", err);
     } finally {
       setLoading(false);
     }
@@ -82,70 +58,42 @@ const NewGamePage = () => {
       <div className="flex flex-1 bg-gray-100">
         <UserSideBar links={publisherLinks} />
         <main className="flex-1 bg-gray-100 p-10 max-w-xl mx-auto">
-          <h1 className="text-2xl font-bold mb-6">Publicar nuevo juego</h1>
-          <form
-            className="space-y-4 bg-white p-6 rounded-lg shadow-md"
-            onSubmit={handleSubmit}
-          >
+          <h1 className="text-2xl font-bold mb-6">Nueva noticia</h1>
+          <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-md">
             <input
-              name="title"
               type="text"
-              placeholder="Título del juego"
+              placeholder="Título"
               className="w-full p-2 border border-gray-300 rounded"
-              onChange={handleChange}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               required
             />
             <textarea
-              name="description"
-              placeholder="Descripción del juego"
+              placeholder="Contenido"
               className="w-full p-2 border border-gray-300 rounded"
-              onChange={handleChange}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
               required
             />
             <input
-              name="price"
-              type="number"
-              step="0.01"
-              placeholder="Precio"
-              className="w-full p-2 border border-gray-300 rounded"
-              onChange={handleChange}
+              type="file"
+              accept="image/*"
+              className="w-full"
+              onChange={(e) => setCover(e.target.files?.[0] || null)}
               required
             />
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Selecciona las plataformas:
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                {platforms.map((platform) => (
-                  <label
-                    key={platform.id}
-                    className="flex items-center space-x-2"
-                  >
-                    <input
-                      type="checkbox"
-                      value={platform.id}
-                      checked={selectedPlatforms.includes(platform.id)}
-                      onChange={() => handlePlatformToggle(platform.id)}
-                    />
-                    <span>{platform.name}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#A35C7A] text-white py-2 rounded hover:bg-[#92486A]"
+              className="w-full bg-[#A35C7A] text-white py-2 rounded hover:bg-[#92486A] disabled:opacity-60"
             >
-              {loading ? "Publicando..." : "Publicar juego"}
+              {loading ? "Publicando..." : "Publicar noticia"}
             </button>
           </form>
         </main>
       </div>
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
-};
-
-export default NewGamePage;
+}

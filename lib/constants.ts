@@ -6,6 +6,6 @@ export const userLinks = [
 
 export const publisherLinks = [
   { href: "/publisher-mode", label: "Panel" },
-  { href: "/publisher-mode/games", label: "crear nuevo post" },
+  { href: "/publisher-mode/new-post", label: "crear nuevo post" },
   { href: "/publisher-mode/new", label: "Publicar nuevo juego" }
 ];

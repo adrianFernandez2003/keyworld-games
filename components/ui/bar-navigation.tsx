@@ -121,7 +121,7 @@ export function BarNavigation() {
 
       <div className="absolute top-[6.7rem] w-full px-10 flex justify-evenly">
         <NavigationButton link="#" label="Categorias" />
-        <NavigationButton link="#" label="Noticias" />
+        <NavigationButton link="/news" label="Noticias" />
         <NavigationButton link="/rewards-and-points" label="Tienda de puntos" />
         <NavigationButton link="#" label="Lo más vendido" />
       </div>
