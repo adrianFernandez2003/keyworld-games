@@ -17,12 +17,14 @@ interface UserContextType {
   user: User | null;
   loading: boolean;
   updating: boolean;
+  refreshUser: () => Promise<void>; 
 }
 
 const UserContext = createContext<UserContextType>({
   user: null,
   loading: true,
   updating: false,
+  refreshUser: async () => {}, 
 });
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
@@ -86,7 +88,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, loading, updating }}>
+    <UserContext.Provider value={{ user, loading, updating, refreshUser: fetchUser }}>
       {children}
     </UserContext.Provider>
   );
