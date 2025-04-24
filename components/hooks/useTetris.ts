@@ -9,6 +9,7 @@ import {
   getEmptyBoard,
   getRandomBlock,
 } from './useTetrisBoard';
+import { sendScore } from '../../lib/reward-api'; 
 
 const MAX_HIGH_SCORES = 10;
 
@@ -78,7 +79,7 @@ export function useTetris() {
       setTickSpeed(TickSpeed.Normal);
       return;
     }
-
+  
     const newBoard = structuredClone(board) as BoardShape;
     addShapeToBoard(
       newBoard,
@@ -87,7 +88,7 @@ export function useTetris() {
       droppingRow,
       droppingColumn
     );
-
+  
     let numCleared = 0;
     for (let row = BOARD_HEIGHT - 1; row >= 0; row--) {
       if (newBoard[row].every((entry) => entry !== EmptyCell.Empty)) {
@@ -95,18 +96,20 @@ export function useTetris() {
         newBoard.splice(row, 1);
       }
     }
-
+  
     const newUpcomingBlocks = structuredClone(upcomingBlocks) as Block[];
     const newBlock = newUpcomingBlocks.pop() as Block;
     newUpcomingBlocks.unshift(getRandomBlock());
-
+  
     if (hasCollisions(board, SHAPES[newBlock].shape, 0, 3)) {
       saveHighScore(score);
       setIsPlaying(false);
       setTickSpeed(null);
+      sendScore(score); // NUEVO: envía score al backend con toast
     } else {
       setTickSpeed(TickSpeed.Normal);
     }
+  
     setUpcomingBlocks(newUpcomingBlocks);
     setScore((prevScore) => prevScore + getPoints(numCleared));
     dispatchBoardState({

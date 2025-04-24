@@ -11,6 +11,7 @@ interface User {
   is_publisher?: boolean;
   updated_at: string;
   username: string;
+  points: number;
 }
 
 interface UserContextType {
@@ -50,16 +51,21 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   
       const { data: profile, error } = await supabase
         .from("profiles")
-        .select("id, name, last_name, username, avatar_url, is_publisher, updated_at")
+        .select("id, name, last_name, username, avatar_url, is_publisher, updated_at, points")
         .eq("id", authUser.id)
         .single();
 
-      if (error) {
-        console.error("❌ Error al obtener perfil:", error.message);
-        setUser(null);
-      } else {
-        setUser(profile);
-      }
+        if (error) {
+          console.error("❌ Error al obtener perfil:", error.message);
+          setUser(null);
+        } else {
+          const parsedProfile: User = {
+            ...profile,
+            points: parseFloat(profile.points),
+          };
+          setUser(parsedProfile);
+        }
+        
     } catch (err) {
       console.error("❌ Error general en fetchUser:", err);
       setUser(null);

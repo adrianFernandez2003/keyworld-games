@@ -3,8 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "../components/index.css";
 import { SessionSyncProvider } from "@/components/session-sync-provider";
-import { CartProvider } from "@/context/cart-context"; 
-
+import { CartProvider } from "@/context/cart-context";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,12 @@ export default function RootLayout({
         <SessionSyncProvider>
           <CartProvider>
             {children}
+            <ToastContainer
+  position="top-center"
+  autoClose={3000}
+  aria-label="Notificaciones del sistema"
+/>
+
           </CartProvider>
         </SessionSyncProvider>
       </body>

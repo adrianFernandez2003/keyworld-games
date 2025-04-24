@@ -1,3 +1,4 @@
+
 import { createClient } from "@/utils/supabase/server";
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,7 @@ export async function GET() {
 
     const { data, error: profileError } = await supabase
       .from("profiles")
-      .select("id, name, avatar_url, username, updated_at, last_name, is_publisher")
+      .select("id, name, avatar_url, username, updated_at, last_name, is_publisher, points")
       .eq("id", user.id)
       .single();
     

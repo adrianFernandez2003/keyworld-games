@@ -28,11 +28,13 @@ export default function CartPage() {
                 {items.map((item) => (
                   <div key={`${item.id}-${item.title}`} className="flex items-center justify-between border-b pb-4">
                     <div className="flex gap-4 items-center">
-                      <Image
-                        src={item.image || "/Image/default-game.jpg"}
-                        alt={item.title}
-                        className="w-16 h-16 rounded-md object-cover"
-                      />
+             <Image
+  src="/Image/default-game.jpg"
+  alt="Juego por defecto"
+  width={80}
+  height={80}
+  className="rounded"
+/>
                       <div>
                         <p className="font-semibold">{item.title}</p>
                         <div className="flex gap-2 mt-2 items-center">

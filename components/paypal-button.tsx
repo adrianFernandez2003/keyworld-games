@@ -84,7 +84,7 @@ export const PayPalButton = ({
     if (!document.getElementById("paypal-sdk")) {
       const script = document.createElement("script");
       script.id = "paypal-sdk";
-      script.src = "https://www.paypal.com/sdk/js?client-id=AclD4HldoJqk1SWEcdlYb-SCDqHnPAcVpyZPyCv0n_qj6u9orlhNURREq2yyilEr-REwfq-bYEuZoWXa&currency=MXN";
+      script.src = "https://www.paypal.com/sdk/js?client-id=AcjG6wqzByRyi-pexToE34VALlga0GE01Jay255_WZQVxiKgGqbkXSzsKIbU57nAG8t_E29NY7GQsTGS&currency=MXN";
       script.async = true;
       script.onload = renderPayPal;
       document.body.appendChild(script);
