@@ -46,8 +46,9 @@ export async function POST(req: NextRequest) {
     }
 
     return new Response(JSON.stringify({ url: publicUrl }), { status: 200 });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("❌ Error general en subida:", err);
     return new Response(JSON.stringify({ error: "Error interno del servidor" }), { status: 500 });
   }
+  
 }
