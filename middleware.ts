@@ -12,5 +12,8 @@ export const config = {
     "/profile",
     "/orders",
     "/change-password",
+    "/rewards-and-points",
+    '/checkout/payment',
+    "/checkout"
   ],
 };
