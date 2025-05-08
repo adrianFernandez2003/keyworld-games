@@ -23,3 +23,4 @@ export async function POST(req: NextRequest) {
 
   return new Response(JSON.stringify({ message: "Correo enviado", code }), { status: 200 });
 }
+// s
