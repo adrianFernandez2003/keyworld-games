@@ -33,8 +33,9 @@ export async function updateSession(request: NextRequest) {
     '/profile',
     '/orders',
     '/change-password',
-    '/rewards-and-points',
-    '/checkout/payment'
+    "/rewards-and-points",
+    '/checkout/payment',
+    "/checkout"
   ];
   const pathname = request.nextUrl.pathname;
   const requiresAuth = protectedPaths.some((path) => pathname.startsWith(path));
