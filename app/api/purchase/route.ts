@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 function generateCode(): string {
   return Array.from({ length: 2 }, () =>
     Math.random().toString(36).substring(2, 10).toUpperCase()
-  ).join("");
+  ).join("-");
 }
 
 export async function POST(req: NextRequest) {
