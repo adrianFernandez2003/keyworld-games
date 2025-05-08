@@ -19,22 +19,24 @@ export default function CheckoutPage() {
 
   const canPayWithPoints = points >= totalPrice;
 
-  useEffect(() => {
-    const fetchPoints = async () => {
-      if (!user) return;
-      try {
-        const res = await fetch("/api/user");
-        const data = await res.json();
-        if (res.ok) {
-          setPoints(Number(data.points));
-          console.log("🔎 Puntos crudos desde backend:", data.points);
-        }
-      } catch (err) {
-        console.error("Error fetching points:", err);
-      } finally {
-        setLoadingPoints(false);
+  // 🔄 Mueve fetchPoints fuera para poder llamarlo desde otros lugares
+  const fetchPoints = async () => {
+    if (!user) return;
+    try {
+      const res = await fetch("/api/user");
+      const data = await res.json();
+      if (res.ok) {
+        setPoints(Number(data.points));
+        console.log("🔎 Puntos crudos desde backend:", data.points);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching points:", err);
+    } finally {
+      setLoadingPoints(false);
+    }
+  };
+
+  useEffect(() => {
     fetchPoints();
   }, [user]);
 
@@ -56,6 +58,9 @@ export default function CheckoutPage() {
         }
 
         items.forEach((item) => removeItem(item.id));
+
+        // ✅ Recargar los puntos después de la compra
+        fetchPoints();
       } else {
         toast.error(data.message || "Error en la compra");
       }
@@ -124,7 +129,12 @@ export default function CheckoutPage() {
                     <div>
                       <p className="font-semibold">{item.title}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <button onClick={() => decreaseItem(item.id)} className="bg-gray-200 px-2 rounded">-</button>
+                        <button
+                          onClick={() => decreaseItem(item.id)}
+                          className="bg-gray-200 px-2 rounded"
+                        >
+                          -
+                        </button>
                         <span>{item.quantity}</span>
                         <button
                           onClick={() =>
@@ -142,7 +152,10 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                     <div className="flex flex-col items-end">
-                      <button onClick={() => removeItem(item.id)} className="text-red-500 hover:text-red-700">
+                      <button
+                        onClick={() => removeItem(item.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
                         <FaTrash />
                       </button>
                       <p className="font-semibold mt-2">${item.price * item.quantity}</p>
