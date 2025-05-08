@@ -76,7 +76,6 @@ const OrdersPage = () => {
                     <th className="px-6 py-3">ESTADO</th>
                     <th className="px-6 py-3">TÍTULO</th>
                     <th className="px-6 py-3">CÓDIGO</th>
-                    <th className="px-6 py-3">MÉTODO DE PAGO</th>
                     <th className="px-6 py-3">TOTAL</th>
                     <th className="px-6 py-3 text-right">ACCIONES</th>
                   </tr>
@@ -105,7 +104,6 @@ const OrdersPage = () => {
                         <td className="px-6 py-4 font-mono">
                           {order.is_redeemed ? order.code : "••••••••"}
                         </td>
-                        <td className="px-6 py-4">PayPal</td>
                         <td className="px-6 py-4">MX${price}</td>
                         <td className="px-6 py-4 text-right space-x-2">
   {!order.is_redeemed && order.redeemed_at == null && (
